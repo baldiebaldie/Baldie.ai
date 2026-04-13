@@ -4,3 +4,5 @@ dist/
 *.env
 !*.env.example
 .DS_Store
+# Payload auto-generates this on next dev — do not commit
+apps/web/src/app/(payload)/admin/importMap.js

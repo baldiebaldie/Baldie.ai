@@ -18,13 +18,13 @@ export default buildConfig({
   },
   collections: [Users, Articles],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET ?? "dev-secret-change-in-production",
+  secret: process.env.PAYLOAD_SECRET!,
   typescript: {
     outputFile: path.resolve(dirname, "src/payload-types.ts"),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL ?? "postgresql://baldie:baldie_dev@localhost:5432/baldie",
+      connectionString: process.env.DATABASE_URL!,
     },
   }),
   plugins: [],

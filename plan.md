@@ -60,20 +60,30 @@ Output is Markdown, stored in Payload, rendered by Next.js.
 
 Build strictly in this sequence to avoid complexity creep:
 
-### Phase 1 — Pipeline Skeleton
-- [ ] Set up Payload CMS + PostgreSQL locally (Docker Compose).
-- [ ] Define the `Article` collection in Payload (`url`, `status`, `content`, `publishedAt`).
-- [ ] Stand up Redis locally.
-- [ ] Scaffold the Brain service (TypeScript, BullMQ worker, no AI yet).
-- [ ] Wire the Payload `afterChange` hook → BullMQ → Brain worker logs the job.
-- [ ] Verify end-to-end: submit URL in Payload admin → job appears in Brain logs.
+### Phase 1 — Pipeline Skeleton ✅
+- [x] Set up Payload CMS + PostgreSQL locally (Docker Compose).
+- [x] Define the `Article` collection in Payload (`url`, `status`, `content`, `publishedAt`).
+- [x] Stand up Redis locally.
+- [x] Scaffold the Brain service (TypeScript, BullMQ worker, no AI yet).
+- [x] Wire the Payload `afterChange` hook → BullMQ → Brain worker logs the job.
+- [ ] Verify end-to-end: submit URL in Payload admin → job appears in Brain logs. *(requires Docker Desktop running)*
 
 ### Phase 2 — The Brain (Scrape + Synthesize)
-- [ ] Implement HTTP scraper in Brain (axios + cheerio).
-- [ ] Add Playwright fallback for JS-rendered pages.
-- [ ] Integrate AI model (abstracted behind a `synthesize(content)` interface).
-- [ ] Implement the four-section post prompt.
-- [ ] Brain PATCHes the Payload article with generated Markdown on completion.
+- [x] Implement HTTP scraper in Brain (axios + cheerio).
+- [x] Add Playwright fallback for JS-rendered pages.
+- [x] Integrate AI model (abstracted behind a `synthesize(content)` interface).
+- [x] Implement the four-section post prompt.
+- [ ] Brain PATCHes the Payload article with generated Markdown on completion. *(wire `synthesize()` call in worker — stub currently in place)*
+
+### Phase 2.5 — Discovery ("Hot in AI" Dashboard)
+- [ ] Create `apps/web/src/lib/discovery/keywords.ts` — AI/ML keyword filter list.
+- [ ] Create `apps/web/src/lib/discovery/hackernews.ts` — fetch top stories via HN Algolia API, filter to external URLs only.
+- [ ] Create `apps/web/src/lib/discovery/reddit.ts` — fetch top posts from r/MachineLearning, r/LocalLLaMA, r/artificial via Reddit JSON API (no key required).
+- [ ] Create `apps/web/src/lib/discovery/index.ts` — combine sources in parallel, deduplicate by URL, keyword-filter, sort by score, return top 40.
+- [ ] Create `apps/web/src/app/(frontend)/discover/page.tsx` — protected Server Component; renders ranked list with score, source tag, and `[+ Add]` button per story.
+- [ ] Create `apps/web/src/app/(frontend)/discover/actions.ts` — Server Action that creates an Article (`status: pending`) via Payload local API; existing `enqueueArticle` hook fires automatically.
+- [ ] Add minimal nav to `apps/web/src/app/(frontend)/layout.tsx` linking Blog + Discover.
+- [ ] Verify end-to-end: visit `/discover` → ranked AI stories appear → click Add → Article created in Payload → Brain picks up job.
 
 ### Phase 3 — Frontend & Review Dashboard
 - [ ] Bootstrap Next.js App Router project, co-located with Payload (using `@payloadcms/next`).
