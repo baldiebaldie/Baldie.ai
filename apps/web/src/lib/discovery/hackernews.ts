@@ -1,8 +1,5 @@
 import type { DiscoveredLink } from "./index";
 
-const HN_API =
-  "https://hn.algolia.com/api/v1/search?tags=story&numericFilters=points%3E50&hitsPerPage=50";
-
 interface HNHit {
   objectID: string;
   title: string;
@@ -16,7 +13,12 @@ interface HNResponse {
 }
 
 export async function fetchHackerNews(): Promise<DiscoveredLink[]> {
-  const res = await fetch(HN_API, {
+  // Use search_by_date so results are sorted newest-first, not by all-time score.
+  // created_at_i filter keeps results within the last 30 days.
+  const thirtyDaysAgo = Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
+  const url = `https://hn.algolia.com/api/v1/search_by_date?tags=story&numericFilters=points%3E10,created_at_i%3E${thirtyDaysAgo}&hitsPerPage=100`;
+
+  const res = await fetch(url, {
     next: { revalidate: 0 }, // always fresh
     signal: AbortSignal.timeout(15_000),
   });

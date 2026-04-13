@@ -19,7 +19,7 @@ interface RedditResponse {
 }
 
 async function fetchSubreddit(sub: string): Promise<DiscoveredLink[]> {
-  const url = `https://www.reddit.com/r/${sub}/top.json?t=day&limit=25`;
+  const url = `https://www.reddit.com/r/${sub}/top.json?t=month&limit=25`;
 
   const res = await fetch(url, {
     headers: {
